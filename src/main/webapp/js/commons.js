@@ -15,3 +15,4 @@ function addClass() {
     let modal = document.getElementById('modal');
     modal.classList.add('is-show');
 }
+

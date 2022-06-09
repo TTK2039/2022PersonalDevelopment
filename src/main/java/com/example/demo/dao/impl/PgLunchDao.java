@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dao.LunchDao;
 import com.example.demo.entity.Lunch;
+import com.example.demo.entity.User;
 
 @Repository
 public class PgLunchDao implements LunchDao {
@@ -20,15 +21,47 @@ public class PgLunchDao implements LunchDao {
 	private static final String SQL_SELECT_ORDER_BY_DATE ="SELECT created_at, sum(price) price, sum(cal) cal FROM lunch WHERE userid = :id GROUP BY created_at ORDER BY created_at";
 	private static final String WHERE_USER_ID =" WHERE userid = :id";	
 	private static final String WHERE_LUNCH_ID =" WHERE id = :id";
-	
+	private static final String WHERE_CREATEDAT =" WHERE created_at = cast(:day as date)";
+	private static final String LIKE_NAME ="name LIKE :name";
+	private static final String SQL_DELETE = "DELETE FROM lunch WHERE id = :id";
+	private static final String SQL_UPDATE = """
+			UPDATE lunch
+			SET
+			name = :name
+			,price = :price
+			,cal = :cal
+			,created_at = :time
+			WHERE
+			id = :id""";
 	
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
+	@Override
+	public int update(Lunch lunch) {
+		String sql = SQL_UPDATE;
+		MapSqlParameterSource param = new MapSqlParameterSource();
+		param.addValue("name", lunch.getName());
+		param.addValue("price", lunch.getPrice());
+		param.addValue("cal", lunch.getCal());
+		param.addValue("time", lunch.getCreatedAt());
+		param.addValue("id", lunch.getId());
 
+		return jdbcTemplate.update(sql, param);		
+	}
+
+	@Override
+	public int delete(int id) {
+		String sql = SQL_DELETE;
+		MapSqlParameterSource param = new MapSqlParameterSource();
+		param.addValue("id", id);
+
+		return jdbcTemplate.update(sql, param);		
+	}
+	
 	@Override
 	public int mogumogu(Lunch lunch) {
 		String sql = SQL_INSERT;
-
+		//INSERT INTO lunch(name, price, cal, userId, created_at) VALUES( :name, :price, :cal, :userId, cast(:time as date))
 		MapSqlParameterSource param = new MapSqlParameterSource();
 		param.addValue("name", lunch.getName());
 		param.addValue("price", lunch.getPrice());
@@ -42,8 +75,21 @@ public class PgLunchDao implements LunchDao {
 	}
 
 	@Override
+	public List<Lunch> findByDay(String day) {
+		//SELECT * FROM lunch WHERE created_at = cast(:day as date)
+		String sql = SQL_SELECT_ALL + WHERE_CREATEDAT;
+
+		MapSqlParameterSource param = new MapSqlParameterSource();
+		param.addValue("day", day);
+		
+		return jdbcTemplate.query(sql, param, new BeanPropertyRowMapper<Lunch>(Lunch.class));
+		
+	}
+	
+	@Override
 	public List<Lunch> findByUserId(int id) {
-		String sql = SQL_SELECT_ALL+ WHERE_USER_ID + ORDER_BY_DATE;
+		//SELECT * FROM lunch WHERE userid = :id ORDER BY created_at
+		String sql = SQL_SELECT_ALL+ WHERE_USER_ID + ORDER_BY_DATE + " LIMIT 10";
 
 		MapSqlParameterSource param = new MapSqlParameterSource();
 		param.addValue("id", id);
@@ -72,6 +118,27 @@ public class PgLunchDao implements LunchDao {
 		return resultList.isEmpty() ? null : resultList.get(0);
 		
 	}
+
+	@Override
+	public List<Lunch> findByKey(String key, User user) {
+		String sql = SQL_SELECT_ALL+ WHERE_USER_ID;
+
+		if(key == "") {
+			MapSqlParameterSource param = new MapSqlParameterSource();
+			param.addValue("id", user.getId());
+			return jdbcTemplate.query(sql, param, new BeanPropertyRowMapper<Lunch>(Lunch.class));
+		}else {
+			sql += " AND " + LIKE_NAME + ORDER_BY_DATE;
+
+			MapSqlParameterSource param = new MapSqlParameterSource();
+			param.addValue("name", "%" + key + "%");
+			param.addValue("id", user.getId());
+			return jdbcTemplate.query(sql, param, new BeanPropertyRowMapper<Lunch>(Lunch.class));
+		}
+	}
+
+
+
 	
 
 }

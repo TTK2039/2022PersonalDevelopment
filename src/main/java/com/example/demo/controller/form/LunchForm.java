@@ -1,10 +1,14 @@
 package com.example.demo.controller.form;
+import java.sql.Date;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.example.demo.entity.Lunch;
 public class LunchForm {
 	
+	
+	private int id;
 	@NotBlank
 	private String name;
     @NotNull
@@ -13,9 +17,15 @@ public class LunchForm {
     private int cal;
     @NotNull
     private int userId;
-    @NotBlank
-    private String createdAt;
+    @NotNull
+    private Date createdAt;
     
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getUserId() {
 		return userId;
 	}
@@ -41,14 +51,14 @@ public class LunchForm {
 		this.cal = cal;
 	}
 
-	public String getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 	public Lunch getAll() {
-		return new Lunch(name, price, cal, userId, createdAt);
+		return new Lunch(id,name, price, cal, userId, createdAt);
 	}
 }
 

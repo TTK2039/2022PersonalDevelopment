@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.controller.form.LoginForm;
 import com.example.demo.controller.form.LunchForm;
-import com.example.demo.controller.form.RegisterForm;
 import com.example.demo.controller.form.SignUpForm;
-import com.example.demo.controller.form.UpdateForm;
 import com.example.demo.dao.BentoDao;
 import com.example.demo.dao.LunchDao;
+import com.example.demo.entity.Lunch;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
 import com.example.demo.service.CategoryService;
@@ -110,24 +109,67 @@ public class IndexController {
 	@RequestMapping({ "detail" })
 	public String detail(@RequestParam int id) {
 		
-		session.setAttribute("lunch", lunchDao.findById(id));
+			session.setAttribute("lunch", lunchDao.findById(id));
+			
+			return "detail";
+	}
+	
+	@RequestMapping({ "serchDate" })
+	public String serchDate(@RequestParam String day, Model model) {
 		
-		return "detail";
+			session.setAttribute("lunchList", lunchDao.findByDay(day));
+			
+			model.addAttribute("msg", day + "のご飯の記録です。");
+			
+			return "menu";
+	}
+	
+	@RequestMapping({ "eat" })
+	public String eat(@RequestParam String day, Model model) {
 		
+			session.setAttribute("lunchList", lunchDao.findByDay(day));
+			
+			model.addAttribute("msg", day + "のご飯の記録です。");
+			
+			return "menu";
 	}
 	
 	@RequestMapping({ "update" })
-	public String update(@ModelAttribute("update") UpdateForm form,@RequestParam int id,Model model) {
-		Product pd = pdService.findById(id);
-		form.setPdId(pd.getProductId());
-		form.setPdName(pd.getName());
-		form.setPrice(pd.getPrice());
-		form.setRoleId(pd.getCategoryId());
-		form.setDescription(pd.getDescription());
+	public String update(@ModelAttribute("update") LunchForm form,@RequestParam int id, Model model) {
+		Lunch lunch = lunchDao.findById(id);
+		
+		model.addAttribute("lunch", lunch);
 		
 		return "update";
 	}
 	
+	@RequestMapping({ "doUpdate" })
+	public String doUpdate(@Validated @ModelAttribute("update") LunchForm form,BindingResult bindingResult, Model model) {
+		if (lunchDao.update(form.getAll()) == 1){
+			model.addAttribute("msg", "更新完了");
+			this.menu(model);
+		}else {
+			model.addAttribute("msg", "更新失敗");
+			return "update";
+		}
+		
+		return "menu";
+	}
+	
+	@RequestMapping({ "lunch" })
+	public String lunch(@Validated @ModelAttribute("lunch") LunchForm form, BindingResult bindingResult,Model model) {
+		if (bindingResult.hasErrors()) {
+            return "insert";
+        }
+		if(lunchDao.mogumogu(form.getAll()) == 1) {
+			model.addAttribute("msg", "今日のご飯を登録しました。");
+			
+			return this.menu(model);
+		}else {
+			model.addAttribute("msg", "エラーが発生しました。");
+			return "insert";
+		}		
+	}
 	@RequestMapping({ "insert" })
 	public String insert(@ModelAttribute("lunch") LunchForm form, BindingResult bindingResult,Model model) {
 		//セレクトボタンの項目
@@ -137,29 +179,13 @@ public class IndexController {
 		
 	}
 	
-	@RequestMapping({ "register" })
-	public String register(@Validated @ModelAttribute("insert") RegisterForm form, BindingResult bindingResult,Model model) {		
-    	
-        if (bindingResult.hasErrors()) {
-            return "insert";
-        }
-		
-		if (pdService.register(form.getAll()) == 1) {
-			model.addAttribute("list",pdService.findAll());
-			model.addAttribute("msg", "登録完了");
-			return "menu";
-		}else {
-			model.addAttribute("msg", "登録失敗");
-		}
-		return "insert";		
-	}	
 	
 	@RequestMapping({ "delete" })
 	public String delete(@RequestParam int id,Model model) {
 		//セレクトボタンの項目		
-		if (pdService.delete(id) == 1) {			
-			model.addAttribute("list",pdService.findAll());
+		if (lunchDao.delete(id) == 1) {
 			model.addAttribute("msg", "削除完了");
+			this.menu(model);
 		}else {
 			model.addAttribute("msg", "削除失敗");
 			return "detail";
@@ -171,8 +197,8 @@ public class IndexController {
 	
 	@RequestMapping({"serch"})
 	public String serch(@RequestParam String key,Model model) {
-		
-		model.addAttribute("list", pdService.findByKey(key));
+		User user = (User) session.getAttribute("user");
+		model.addAttribute("lunchList", lunchDao.findByKey(key, user));
 		
 		return "menu";
 	}
@@ -208,19 +234,6 @@ public class IndexController {
 		}		
 	}
 	
-	@RequestMapping({ "lunch" })
-	public String lunch(@Validated @ModelAttribute("lunch") LunchForm form, BindingResult bindingResult,Model model) {
-		if (bindingResult.hasErrors()) {
-            return "insert";
-        }
-		if(lunchDao.mogumogu(form.getAll()) == 1) {
-			model.addAttribute("msg", "今日のご飯を登録しました。");
-			
-			return this.menu(model);
-		}else {
-			model.addAttribute("msg", "エラーが発生しました。");
-			return "insert";
-		}		
-	}
+
 	
 }

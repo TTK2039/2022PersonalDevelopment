@@ -21,7 +21,7 @@
 	src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@next/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script type="text/javascript"
 	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
-
+<link href="css/commons.css" rel="stylesheet">
 <title>メニュー</title>
 <link href="css/commons.css" rel="stylesheet">
 <link
@@ -48,36 +48,43 @@
 		</header>
 	</div>
 	<hr>
-	<c:if test="${user.id == 1}">
-		<div class="btn">
-			<a class="basic_btn regist" href="insert">新規登録</a>
-		</div>
-	</c:if>
+	<%-- 	<c:if test="${user.id == 1}"> --%>
+	<div class="btn">
+		<a class="basic_btn regist" href="insert">もぐもぐ</a>
+	</div>
+	<%-- 	</c:if> --%>
 	<span class="error">${errorSelect}</span>
-	<form method="get" action="serch" class="search_container ">
+	<select id="changeSelect" name="selectbox" onchange="entryChange());">
+		<option value="select1">お弁当の名前</option>
+		<option value="select2">日付を指定</option>
+		<option value="select3">日付で範囲を指定</option>
+	</select>
+	<form id="firstBox" method="get" action="serch"
+		class="search_container ">
 		<input type="text" name="key" size="25" placeholder="キーワード検索">
 		<input type="submit" value="&#xf002">
 	</form>
-
-	<div class="order">
-		<select
-			onChange="location.href='TableServlet?sort=' + value + '&find=&keyword=' + document.getElementById('keyword').value">
-			<option>並び替え</option>
-			<option value="sortId">商品ID</option>
-			<option value="sortCate">カテゴリ</option>
-			<option value="sortPriceLow">単価：安い順</option>
-			<option value="sortPriceHigh">単価：高い順</option>
-			<option value="sortDayOld">登録日：古い順</option>
-			<option value="sortDayNew">登録日：新しい順</option>
-		</select>
+	<form>
+	<div id="secondBox">
+		<input type="date" name="day"/>
+		<input type="submit" value="&#xf002" formaction="serchDate">
+		<%-- 		<form:errors path="createdAt" cssStyle="color: red" /> --%>
 	</div>
+	</form>
+	<form>
+	<div id="thirdBox">
+		<input type="date" />から<input type="date" />まで
+		<input type="submit" value="&#xf002" formaction="serchDateRange">
+		<%-- 		<form:errors path="createdAt" cssStyle="color: red" /> --%>
+	</div>
+	</form>
 	<p>${msg }</p>
 	<%-- 	<c:if test="${!(empty count) }"> --%>
 	<div class="caption">
 		<p>
 			検索結果：${lunchList.size()}件<br>${resultSort }</p>
 	</div>
-	<table border="1">
+	<table border="1" id="sort_table">
 		<thead>
 			<tr>
 				<th>食べた日</th>
@@ -99,43 +106,41 @@
 				</tr>
 			</c:forEach>
 		</tbody>
-
 	</table>
-	<c:forEach var="bento" items="${bentoList }">${bento.id },${bento.name}</c:forEach>
 	<div style="width: 800px">
 		<canvas id="mychart"></canvas>
 	</div>
-	<p>
-		<c:forEach var="product" items="${testList}">${product.createdAt}<br>
-		</c:forEach>
-	</p>
 	<div class="container" style="width: 100%">
 		<canvas id="canvas"></canvas>
 	</div>
-	<script>
-		window.onload = function() {
-			ctx = document.getElementById("canvas").getContext("2d");
+	<footer></footer>
+</body>
+<script>
+window.addEventListener('load', makeChart);
+	function makeChart(){		
+	ctx = document.getElementById("canvas").getContext("2d");
 			window.myCanvas = new Chart(ctx, {
 				type : 'bar',
 				data : barChartData,
 				options : complexChartOption
-			});
-		}
-		document.getElementById('canvas').addEventListener('click', e => {
-				console.log(e)
-		      const elements = window.myCanvas.getElementAtEvent(e);
-		      if (elements.length) {
-		    	  console.log('elements', [elements[0]._model.label]);
-		      	alert(`${elements[0]._model.label}`);
-		      }else {
-		    	  alert('aa');
-		      }
-		    });
+			})
+	};
+			document.getElementById('canvas').addEventListener('click', e => {
+					console.log(e)
+		    	  const elements = window.myCanvas.getElementAtEvent(e);
+		    	  if (elements[0]._model.label.length) {
+		    		  window.location.href = './eat?day=' + [elements[0]._model.label];
+	    			  console.log('elements', [elements[0]._model.label]);
+		    	  }else {
+		    		  alert('aa');
+		     	 }
+			
+		    	});
 	</script>
 
 
 
-	<script>
+<script>
 		// とある4週間分のデータログ
 		var barChartData = {
 			labels : [<c:forEach var = "lunch" items = "${tableList}">'${lunch.createdAt}',</c:forEach>],
@@ -163,7 +168,7 @@
 
 
 
-	<script>
+<script>
 		var complexChartOption = {
 			responsive : true,
 			scales : {
@@ -192,6 +197,107 @@
 			}
 		};
 	</script>
-	<footer></footer>
-</body>
+<script>
+let column_no = 0; //今回クリックされた列番号
+let column_no_prev = 0; //前回クリックされた列番号
+window.addEventListener('load', function () {
+	document.querySelectorAll('#sort_table th').forEach(elm => {
+		elm.onclick = function () {
+			column_no = this.cellIndex; //クリックされた列番号
+			let table = this.parentNode.parentNode.parentNode;
+			let sortType = 0; //0:数値 1:文字
+			let sortArray = new Array; //クリックした列のデータを全て格納する配列
+			for (let r = 1; r < table.rows.length; r++) {
+				//行番号と値を配列に格納
+				let column = new Object;
+				column.row = table.rows[r];
+				column.value = table.rows[r].cells[column_no].textContent;
+				sortArray.push(column);
+				//数値判定
+				if (isNaN(Number(column.value))) {
+					sortType = 1; //値が数値変換できなかった場合は文字列ソート
+				}
+			}
+			if (sortType == 0) { //数値ソート
+				if (column_no_prev == column_no) { //同じ列が2回クリックされた場合は降順ソート
+					sortArray.sort(compareNumberDesc);
+				} else {
+					sortArray.sort(compareNumber);
+				}
+			} else { //文字列ソート
+				if (column_no_prev == column_no) { //同じ列が2回クリックされた場合は降順ソート
+					sortArray.sort(compareStringDesc);
+				} else {
+					sortArray.sort(compareString);
+				}
+			}
+			//ソート後のTRオブジェクトを順番にtbodyへ追加（移動）
+			let tbody = this.parentNode.parentNode;
+			for (let i = 0; i < sortArray.length; i++) {
+				tbody.appendChild(sortArray[i].row);
+			}
+			//昇順／降順ソート切り替えのために列番号を保存
+			if (column_no_prev == column_no) {
+				column_no_prev = -1; //降順ソート
+			} else {
+				column_no_prev = column_no;
+			}
+		};
+	});
+});
+//数値ソート（昇順）
+function compareNumber(a, b)
+{
+	return a.value - b.value;
+}
+//数値ソート（降順）
+function compareNumberDesc(a, b)
+{
+	return b.value - a.value;
+}
+//文字列ソート（昇順）
+function compareString(a, b) {
+	if (a.value < b.value) {
+		return -1;
+	} else {
+		return 1;
+	}
+	return 0;
+}
+//文字列ソート（降順）
+function compareStringDesc(a, b) {
+	if (a.value > b.value) {
+		return -1;
+	} else {
+		return 1;
+	}
+	return 0;
+}
+</script>
+<script type="text/javascript">
+document.getElementById('changeSelect').onchange = entryChange;
+
+function entryChange(){
+	if(document.getElementById('changeSelect')){
+		id = document.getElementById('changeSelect').value;
+		if(id == 'select1'){
+			document.getElementById('firstBox').style.display = "";
+			document.getElementById('secondBox').style.display = "none";
+			document.getElementById('thirdBox').style.display = "none";
+		}else if(id == 'select2'){
+			//フォーム
+			document.getElementById('firstBox').style.display = "none";
+			document.getElementById('secondBox').style.display = "";
+			document.getElementById('thirdBox').style.display = "none";
+		}else if(id == 'select3'){
+			document.getElementById('firstBox').style.display = "none";
+			document.getElementById('secondBox').style.display = "none";
+			document.getElementById('thirdBox').style.display = "";
+		}
+	}
+}
+//オンロードさせ、リロード時に選択を保持
+window.onload = entryChange;
+</script>
+
 </html>

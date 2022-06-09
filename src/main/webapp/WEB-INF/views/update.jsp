@@ -39,43 +39,33 @@
 			<form:form modelAttribute="update" method="get">
 				<fieldset class="label-130">
 					<div>
-						<input type="hidden" name="id" value="${product.id}">
+						<form:input path="id" type="hidden" name="id" value="${lunch.id}"/>
 					</div>
 					<div>
-						<label>商品ID</label>
-						<form:input type="text" path="pdId"
-							 class="base-text" />
-							<form:errors path="pdId" cssStyle="color: red" />
+						<label>食べた日</label>
+						<form:input type="date" path="createdAt"
+							 class="base-text" value="${lunch.createdAt}"/>
+							<form:errors path="createdAt" cssStyle="color: red" />
 					</div>
 					<div>
-						<label>商品名</label>
-						<form:input path="pdName" value="${product.name}"
-							class="base-text" />
-						<form:errors path="pdName" cssStyle="color: red" />
+						<label>お弁当名</label>
+						<form:input type="text" path="name"
+							 class="base-text" value="${lunch.name }"/>
+							<form:errors path="name" cssStyle="color: red" />
 					</div>
 					<div>
-						<label>単価</label>
+						<label>値段</label>
 						<form:input path="price"
-							 class="base-text" />
+							 class="base-text" value="${lunch.price }"/>
 						<form:errors path="price" cssStyle="color: red" />
 					</div>
 					<div>
-						<label>カテゴリ</label>
-						<form:select path="roleId" class="base-text">
-							<c:forEach var="cd" items="${cdList}">
-								<option value="${cd.id}">${cd.name}</option>
-							</c:forEach>
-						</form:select>
+						<label>カロリー</label>
+						<form:input path="cal"
+							 class="base-text" value="${lunch.cal }"/>
+						<form:errors path="cal" cssStyle="color: red" />
 					</div>
-					<div>
-						<label>商品説明</label>
-						<form:textarea class="base-text" path="description" />
-					</div>
-					<!--           <div> -->
-					<!--             <label>画像</label> -->
-					<!--             <input type="file" name="file"> -->
-					<!--             <span class="error">エラーメッセージ</span> -->
-					<!--           </div> -->
+
 				</fieldset>
 				<div class="btns">
 					<button type="button" onclick="openModal()" class="basic_btn">更新</button>
@@ -85,9 +75,7 @@
 				<div id="modal">
 					<p class="modal_message">更新しますか？</p>
 					<div class="btns">
-						<button type="submit" class="basic_btn" name="btn" value="update">更新</button>
-						<input type="button" class="basic_btn"
-							onclick="location.href='./delete?id=${product.id}'" value="削除">
+						<form:button type="submit" class="basic_btn" name="btn" formaction="doUpdate">更新</form:button>
 						<button type="button" onclick="closeModal()" class="cancel_btn">キャンセル</button>
 					</div>
 				</div>

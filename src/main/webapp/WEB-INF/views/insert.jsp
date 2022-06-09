@@ -27,7 +27,7 @@
 			<a href="menu.html">商品管理システム</a>
 		</h1>
 		<div class="user">
-			<p class="user_name">${fn:escapeXml(user.id)}さん、こんにちは</p>
+			<p class="user_name">${fn:escapeXml(user.name)}さん、こんにちは</p>
 			<form class="logout_form" action="logout">
 				<button class="logout_button">
 					<img src="images/ドアアイコン.png">ログアウト
@@ -81,7 +81,7 @@
 				</fieldset>
 				<div class="btns">
 					<button type="button" onclick="openModal()" class="basic_btn">
-						登録</button>
+						<fmt:message key="form.lbl.register" /></button>
 					<input type="button" onclick="location.href='menu'" value="戻る"
 						class="cancel_btn">
 				</div>
@@ -101,7 +101,6 @@
 				</div>
 			</form:form>
 			<form></form>
-			<c:forEach var="bento" items="${bentoList }">${bento.id },${bento.name}</c:forEach>
 		</div>
 	</div>
 	<div id="fadeLayer"></div>

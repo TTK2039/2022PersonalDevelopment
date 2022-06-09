@@ -60,7 +60,7 @@
 					<div class="btns">
 						<%-- 						<c:if test="${user.userId == 1}"> --%>
 						<input type="button" onclick="openModal()" value="削除"	class="basic_btn">
-						<input type="button" class="basic_btn" onclick="location.href='./update?id=${product.id}'" value="更新" />
+						<input type="button" class="basic_btn" onclick="location.href='./update?id=${lunch.id}'" value="更新" />
 						<%-- 						</c:if> --%>
 						<input type="button" onclick="location.href='menu'" value="戻る"
 							class="cancel_btn">
@@ -69,7 +69,7 @@
 						<p class="modal_message">削除しますか？</p>
 						<div class="btns">
 							<input type="button" class="basic_btn"
-								onclick="location.href='./delete?id=${product.id}'" value="削除">
+								onclick="location.href='./delete?id=${lunch.id}'" value="削除">
 							<button type="button" onclick="closeModal()" class="cancel_btn">キャンセル</button>
 						</div>
 					</div>

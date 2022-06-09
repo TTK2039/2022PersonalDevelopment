@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.sql.Date;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -9,12 +11,27 @@ public class Lunch {
 	private int price;
     private int cal;
     private int userId;
-    private String createdAt; 
+    private Date createdAt; 
     
 	public Lunch() {
 		super();
 	}
-	public Lunch(@NotBlank String name, @NotBlank int price, @NotNull int cal, int userId, String createdAt) {
+	
+	
+	
+	public Lunch(int id, String name, int price, int cal, int userId, Date createdAt) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.cal = cal;
+		this.userId = userId;
+		this.createdAt = createdAt;
+	}
+
+
+
+	public Lunch(@NotBlank String name, @NotBlank int price, @NotNull int cal, int userId, Date createdAt) {
 		this.name = name;
 		this.price = price;
 		this.cal = cal;
@@ -22,10 +39,11 @@ public class Lunch {
 		this.createdAt = createdAt;
 	}
 		
-	public String getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
-	public void setCreatedAt(String createdAt) {
+	
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 	public int getUserId() {
