@@ -5,7 +5,38 @@ public class Bento {
     private String name;
 	private int price;
     private int cal;
+    private int userId;
     
+	public Bento() {
+		super();
+	}
+	
+	
+	
+	public Bento(int id, String name, int price, int cal, int userId) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.cal = cal;
+		this.userId = userId;
+	}
+
+
+
+	public Bento(String name, int price, int cal, int userId) {
+		super();
+		this.name = name;
+		this.price = price;
+		this.cal = cal;
+		this.userId = userId;
+	}
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	public int getId() {
 		return id;
 	}

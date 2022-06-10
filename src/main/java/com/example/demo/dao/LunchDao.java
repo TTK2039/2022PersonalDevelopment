@@ -15,13 +15,15 @@ public interface LunchDao {
 
 	public Lunch findById(int id);
 
-	public List<Lunch> findByDay(String day);
+	public List<Lunch> findByDay(String day, User user);
 
 	public List<Lunch> findByKey(String key, User user);
 
 	public int delete(int id);
 
 	public int update(Lunch all);
+
+	public List<Lunch> findByDayRange(String day1, String day2, User user);
 
 }
 

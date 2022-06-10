@@ -34,7 +34,7 @@
 		<header>
 			<div class="header">
 				<h1 class="site_logo">
-					<a href="menu.jsp">商品管理システム</a>
+					<a href="menu"><img src="./images/logo.png"></a>
 				</h1>
 				<div class="user">
 					<p class="user_name">${user.name}さん、こんにちは</p>
@@ -52,6 +52,9 @@
 	<div class="btn">
 		<a class="basic_btn regist" href="insert">もぐもぐ</a>
 	</div>
+	<div class="btn">
+		<a class="basic_btn regist" href="bento">簡易登録用リストの更新</a>
+	</div>
 	<%-- 	</c:if> --%>
 	<span class="error">${errorSelect}</span>
 	<select id="changeSelect" name="selectbox" onchange="entryChange());">
@@ -65,18 +68,18 @@
 		<input type="submit" value="&#xf002">
 	</form>
 	<form>
-	<div id="secondBox">
-		<input type="date" name="day"/>
-		<input type="submit" value="&#xf002" formaction="serchDate">
-		<%-- 		<form:errors path="createdAt" cssStyle="color: red" /> --%>
-	</div>
+		<div id="secondBox">
+			<input type="date" name="day" /> <input type="submit" value="&#xf002"
+				formaction="serchDate">
+			<%-- 		<form:errors path="createdAt" cssStyle="color: red" /> --%>
+		</div>
 	</form>
 	<form>
-	<div id="thirdBox">
-		<input type="date" />から<input type="date" />まで
-		<input type="submit" value="&#xf002" formaction="serchDateRange">
-		<%-- 		<form:errors path="createdAt" cssStyle="color: red" /> --%>
-	</div>
+		<div id="thirdBox">
+			<input type="date" name="day1" />から<input type="date" name="day2" />まで
+			<input type="submit" formaction="serchDateRange">
+			<%-- 		<form:errors path="createdAt" cssStyle="color: red" /> --%>
+		</div>
 	</form>
 	<p>${msg }</p>
 	<%-- 	<c:if test="${!(empty count) }"> --%>
@@ -198,6 +201,9 @@ window.addEventListener('load', makeChart);
 		};
 	</script>
 <script>
+
+//参考サイト  //https://blog.ver001.com/javascript-table-sort/ 
+
 let column_no = 0; //今回クリックされた列番号
 let column_no_prev = 0; //前回クリックされた列番号
 window.addEventListener('load', function () {

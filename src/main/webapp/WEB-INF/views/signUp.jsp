@@ -16,7 +16,7 @@
 
 	<div class="header">
 		<h1 class="site_logo">
-			<a href="index">商品管理システム</a>
+			<a href="menu"><img src="./images/logo.png"></a>
 		</h1>
 	</div>
 
@@ -42,12 +42,7 @@
 					</div>
 					<div>
 						<label class="required"><fmt:message key="form.lbl.password" /></label>
-						<form:input type="text" path="password" class="base-text" />
-						<form:errors path="password" cssStyle="color: red" />
-					</div>
-					<div>
-						<label class="required"><fmt:message key="form.lbl.password" />確認</label>
-						<form:input type="text" path="password2" class="base-text" />
+						<form:input type="password" path="password" class="base-text" />
 						<form:errors path="password" cssStyle="color: red" />
 					</div>
 				</fieldset>

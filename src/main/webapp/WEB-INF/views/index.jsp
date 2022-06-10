@@ -15,14 +15,14 @@
 </head>
 <body class="login_body">
 	<div class="header">
-		<h1 class="site_logo">商品管理システム</h1>
+		<a href="menu"><img src="./images/logo.png"></a>
 	</div>
 	<div class="btn">
 		<a class="basic_btn regist" href="signUp">新規登録</a>
 	</div>
 	${msg }
 	<div class="login_form">
-		<img src="./images/logo.png" class="login_logo">
+		<img src="./images/logo.png">
 		<c:if test="${error == 1 }">
 			<p class="error">
 				<fmt:message key="form.lbl.loginError" />
@@ -36,7 +36,7 @@
 			</div>
 			<div>
 				<label><fmt:message key="form.lbl.password" /></label>
-				<form:input path="password" class="base-text" />
+				<form:input type="password" path="password" class="base-text" />
 				<form:errors path="password" cssStyle="color: red" />
 			</div>
 			<form:button formaction="login">ログイン</form:button>

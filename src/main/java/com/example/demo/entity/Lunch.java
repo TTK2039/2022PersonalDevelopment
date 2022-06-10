@@ -20,7 +20,6 @@ public class Lunch {
 	
 	
 	public Lunch(int id, String name, int price, int cal, int userId, Date createdAt) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.price = price;

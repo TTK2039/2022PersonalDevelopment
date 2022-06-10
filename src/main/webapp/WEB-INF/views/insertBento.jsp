@@ -41,56 +41,30 @@
 	<div class="insert">
 		<div class="discription">
 			<p>
-				お昼ご飯は何を食べた？（<span class="required"></span>は必須です）
+				簡易登録リストに追加しよう！（<span class="required"></span>は必須です）
 			</p>
 		</div>
 
 		<div class="form_body">
 			<p class="error">${error }</p>
 			<p>${msg }</p>
-			<form:form modelAttribute="lunch" method="post">
-				<div class="form-check">
-					<input class="form-check-input" type="radio" value="easy" name="radio"
-						onclick="formSwitch()" checked> <label
-						class="form-check-label"> 簡易入力</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" value="free" name="radio"
-						onclick="formSwitch()"> <label class="form-check-label">
-						自由入力</label>
-				</div>
-
+			<form:form modelAttribute="bento" method="post">
 				<fieldset class="label-130">
-					<div class="select_block" id="easy">
-						<label class="required">弁当名</label>
-						<form:select path="name" class="base-text" id="food">
-							<option value="">選択してください。</option>
-							<c:forEach var="bento" items="${bentoList}">
-								<option value="${bento.name}" id="nameEasy">${bento.name}</option>
-							</c:forEach>
-						</form:select>
-						<form:errors path="name" cssStyle="color: red" />
-					</div>
 					<div id="free" style="none">
-						<label class="required">弁当名</label>
-						<form:input type="text" path="name2" class="base-text"
+						<label class="required">ごはん名</label>
+						<form:input type="text" path="name" class="base-text"
 							placeholder="入力してください" />
-						<form:errors path="name2" cssStyle="color: red"  />
+						<form:errors path="name" cssStyle="color: red"  />
 					</div>
 					<div>
 						<label class="required">値段</label>
-						<form:input type="text" path="price" class="base-text" id="price" />
+						<form:input type="number" path="price" class="base-text" id="price" />
 						<form:errors path="price" cssStyle="color: red" />
 					</div>
 					<div>
 						<label class="required">かろりー</label>
-						<form:input type="text" path="cal" class="base-text" id="cal" />
+						<form:input type="number" path="cal" class="base-text" id="cal" />
 						<form:errors path="cal" cssStyle="color: red" />
-					</div>
-					<div>
-						<label class="required">食べた日</label>
-						<form:input type="date" path="createdAt" />
-						<form:errors path="createdAt" cssStyle="color: red" />
 					</div>
 					<div>
 						<form:input path="userId" type="hidden" value="${user.id }" />
@@ -109,7 +83,7 @@
 						しますか？
 					</p>
 					<div class="btns" id="fadeLayer">
-						<form:button type="submit" formaction="lunch" class="basic_btn">
+						<form:button type="submit" formaction="bentoRegister" class="basic_btn">
 							<fmt:message key="form.lbl.register" />
 						</form:button>
 						<button type="button" onclick="closeModal()" class="cancel_btn">

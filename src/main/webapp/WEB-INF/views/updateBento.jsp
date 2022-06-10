@@ -42,12 +42,6 @@
 						<form:input path="id" type="hidden" name="id" value="${lunch.id}"/>
 					</div>
 					<div>
-						<label>食べた日</label>
-						<form:input type="date" path="createdAt"
-							 class="base-text" value="${lunch.createdAt}"/>
-							<form:errors path="createdAt" cssStyle="color: red" />
-					</div>
-					<div>
 						<label>お弁当名</label>
 						<form:input type="text" path="name"
 							 class="base-text" value="${lunch.name }"/>
@@ -65,7 +59,9 @@
 							 class="base-text" value="${lunch.cal }"/>
 						<form:errors path="cal" cssStyle="color: red" />
 					</div>
-
+					<div>
+						<form:input path="userId" type="hidden" name="id" value="${user.id}"/>
+					</div>
 				</fieldset>
 				<div class="btns">
 					<button type="button" onclick="openModal()" class="basic_btn">更新</button>
@@ -75,7 +71,7 @@
 				<div id="modal">
 					<p class="modal_message">更新しますか？</p>
 					<div class="btns">
-						<form:button type="submit" class="basic_btn" name="btn" formaction="doUpdate">更新</form:button>
+						<form:button type="submit" class="basic_btn" name="btn" formaction="doUpdateBento">更新</form:button>
 						<button type="button" onclick="closeModal()" class="cancel_btn">キャンセル</button>
 					</div>
 				</div>
